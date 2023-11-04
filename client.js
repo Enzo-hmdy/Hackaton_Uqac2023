@@ -10,7 +10,7 @@ socket.on('connect', function (socket) {
     console.log('Connected!');
 });
 
-socket.emit("newgame", ["lvl2", 10], newGameResponse => {
+socket.emit("newgame", ["lvl1", 25], newGameResponse => {
     const gameId = newGameResponse[0];
     const agentId = newGameResponse[1];
 
@@ -33,7 +33,8 @@ function solve(map, gameId, agentId) {
     console.log("Calcul de tous les chemins possibles...")
     const everyPossiblities = everyPossibilities(graph)
     console.log("Test de tous les chemins...")
-    if (everyPossiblities.length === 0) {
+
+    if (everyPossiblities.length === 1) {
         console.log("Tous les chemins ont été résolu!")
         return;
     }

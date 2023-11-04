@@ -32,7 +32,15 @@ function array_to_weighted_graph(array) {
                 case 2:
                     generateElem([x, y], false, false)
                     break;
+                case 3:
+                    generateElem([x, y], true, false)
+                    generateElem([x, y], false, false)
+                    break;
                 case 4:
+                    generateElem([x, y], false, true)
+                    break;
+                case 5:
+                    generateElem([x, y], true, false)
                     generateElem([x, y], false, true)
                     break;
                 case 0:
