@@ -68,6 +68,7 @@
 
         // Functio used to update the grid display on page based on status
         function displayStatus(status) {
+          console.log("status actualiqé")
           // Parse string status to object
           status = JSON.parse(status)
           document.getElementById("gamegrid").innerHTML = null
@@ -177,7 +178,7 @@
         // First args given a level_name, a string used by the server to load maps from
         // Second arg given is the number of episodes (proper successive lockouts) required for completting the game.
         // Response contains game_id, the ID of the game in the server, and agent_id the ID of the agent in the game.
-        socket.emit("newgame", ["lvl0", 3], (response) => {
+        socket.emit("newgame", ["lvl1", 3], (response) => {
           console.log(response);
           game_id = response[0]
           agent_id = response[1]
@@ -194,10 +195,9 @@
         }); 
 
 
-        const delay = ms => new Promise(res => setTimeout(res, ms));
+        
 
     function automatiser(){
-
 
       const gameStatusResponse = JSON.parse(game_status)
       console.log(gameStatusResponse)
@@ -236,63 +236,59 @@
       console.log("Meilleur chemin trouvé: ", JSON.stringify(bestPath));
       console.log("Coût du chemin", bestWeight)
 
-      bestPath.forEach(async(currentLetter, index) => {
-
-        await delay(2000)
-
-          if (index === bestPath.length - 1) {
-            lockout()
-              // verouille la valve
-              
-          } else {
-              let currentPos = graph[currentLetter]["coords"];
-              let nextPos = graph[bestPath[index + 1]]["coords"];
-
-              let moveX = currentPos[0] - nextPos[0];
-              if (moveX > 0) {
-                  let i = Math.abs(moveX)
-                  // console.log("need to move ", i, "times left")
-
-                  while (i-- > 0) {
-                      // console.log("move left")
-
-                      moveLeft()
-                  }
-              } else if (moveX < 0) {
-                  let i = Math.abs(moveX)
-                  // console.log("need to move ", i, "times right")
-
-                  while (i-- > 0) {
-                      // console.log("move right")
-
-                       moveRight()
-                  }
-              }
-
-              let moveY = currentPos[1] - nextPos[1];
-              if (moveY > 0) {
-                  let i = Math.abs(moveY)
-                  // console.log("need to move ", i, "times up")
-
-                  while (i-- > 0) {
-                      // console.log("move up")
-
-                      moveUp()
-                  }
-              } else if (moveY < 0) {
-                  let i = Math.abs(moveY)
-                  // console.log("need to move ", i, "times down")
-                  while (i-- > 0) {
-                      // console.log("move down")
-
-                      moveDown()
-                  }
-              }
+      for (let index = 0; index < bestPath.length; index++) {
+    const currentLetter = bestPath[index];
 
 
-              lockout()
-              // verouille la valve
-          }})}
+    if (index === bestPath.length - 1) {
+        lockout();
+        // verrouille la valve
+    } else {
+        let currentPos = graph[currentLetter]["coords"];
+        let nextPos = graph[bestPath[index + 1]]["coords"];
+
+        let moveX = currentPos[0] - nextPos[0];
+        if (moveX > 0) {
+            let i = Math.abs(moveX);
+            // console.log("need to move ", i, "times left")
+
+            while (i-- > 0) {
+                console.log("move left");
+                moveLeft()
+            }
+        } else if (moveX < 0) {
+            let i = Math.abs(moveX);
+            // console.log("need to move ", i, "times right")
+
+            while (i-- > 0) {
+                console.log("move right");
+                moveRight()
+            }
+        }
+
+        let moveY = currentPos[1] - nextPos[1];
+        if (moveY > 0) {
+            let i = Math.abs(moveY);
+            // console.log("need to move ", i, "times up")
+
+            while (i-- > 0) {
+                console.log("move up");
+                moveUp()
+            }
+        } else if (moveY < 0) {
+            let i = Math.abs(moveY);
+            // console.log("need to move ", i, "times down");
+            while (i-- > 0) {
+                console.log("move down");
+                moveDown()
+            }
+        }
+
+        lockout();
+        // verrouille la valve
+    }
+}}
+
 
 
         function array_to_weighted_graph(array) {
@@ -380,7 +376,7 @@
  * @param graph
  * @returns {String[][]}
  */
- export function everyPossibilities(graph) {
+ function everyPossibilities(graph) {
     const pointList = Object.keys(graph);
     const starts = Object.values(graph).filter(e => e.isStart);
     const ends = Object.values(graph).filter(e => e.isEnd);
