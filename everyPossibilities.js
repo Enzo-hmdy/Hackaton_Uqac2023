@@ -4,58 +4,34 @@
  * @returns {String[][]}
  */
 function everyPossibilities(graph) {
-    const pointList = [];
-    for (letter in graph) {
-        pointList.push(letter)
-    }
+    const pointList = Object.keys(graph);
+    const starts = Object.values(graph).filter(e => e.isStart);
+    const ends = Object.values(graph).filter(e => e.isEnd);
+    const others = Object.values(graph).filter(e => !e.isStart && !e.isEnd).map(e => e.letter);
 
-    let start;
-    let end;
-    let others = []
+    if (starts.length === 0 || ends.length === 0) return [];
 
-    for (let [key, e] of Object.entries(graph)) {
-        if (e["isStart"] === true) {
-            start = e;
-        } else if (e["isEnd"] === true) {
-            end = e;
-        } else {
-            others.push(e)
-        }
-    }
-
-    if (start == null || end == null)
-        return []
-
-    const otherValues = [];
-    others.forEach(e => {
-        otherValues.push(e["letter"])
-    })
-
-
-    const allPossibilities = permutation(otherValues).map(list => {
-        return [start["letter"], ...list, end["letter"]]
-    })
+    const allPossibilities = permutation(others).map(list => [starts[0].letter, ...list, ends[0].letter]);
 
     return allPossibilities;
 }
 
 
 function permutation(arr) {
+    const result = [];
+
     function p(array, temp) {
-        var i, x;
         if (!array.length) {
             result.push(temp);
         }
-        for (i = 0; i < array.length; i++) {
-            x = array.splice(i, 1)[0];
+        for (let i = 0; i < array.length; i++) {
+            const x = array.splice(i, 1)[0];
             p(array, temp.concat(x));
             array.splice(i, 0, x);
         }
     }
 
-    var result = [];
     p(arr, []);
     return result;
 }
-
 module.exports = everyPossibilities;

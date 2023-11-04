@@ -28,11 +28,11 @@ function solve(map, gameId, agentId) {
     // console.log(gameStatusResponse)
 
     console.log("Carte actuelle: ", JSON.stringify(gameStatusResponse))
-    console.log("Calcul des possibilités...")
+    console.log("Génération du graph...")
     let graph = array_to_graph(gameStatusResponse)
-
+    console.log("Calcul de tous les chemins possibles...")
     const everyPossiblities = everyPossibilities(graph)
-
+    console.log("Test de tous les chemins...")
     if (everyPossiblities.length === 0) {
         console.log("Tous les chemins ont été résolu!")
         return;
