@@ -93,20 +93,21 @@ def generate_random_map(size):
     # generate random checkpoints it's th floor(x + y / 2) -1  
     nb_checkpoints = int((x+y)/2) - 1
 
-    for i in range(nb_checkpoints):
+
+    i = 0 
+    while i < nb_checkpoints:
         checkpoint_x = random.randint(0,x-1)
         checkpoint_y = random.randint(0,y-1)
-        # if it's on the same case as start or end, put 3 on the map but verify that a 2 , 3 4 or 5 is not already on the map
-        if (checkpoint_x == start_x and checkpoint_y == start_y) or (checkpoint_x == end_x and checkpoint_y == end_y):
-            if 2 not in map[checkpoint_y] and 3 not in map[checkpoint_y] and 4 not in map[checkpoint_y] and 5 not in map[checkpoint_y]:
-                map[checkpoint_y][checkpoint_x] = 3
+        # if it's on the same case as start  put 3  but that 3 is not already on the map
+        if checkpoint_x == start_x and checkpoint_y == start_y:
+            if 3 in map[checkpoint_y]:
+                pass
             else:
-                i -= 1
-        # if it's on the same case as a checkpoint, put 3 on the map but verify that a 2 , 3 4 or 5 is not already on the map
-        elif 3 in map[checkpoint_y] or 2 in map[checkpoint_y] or 4 in map[checkpoint_y] or 5 in map[checkpoint_y]:
-            i -= 1
+                map[checkpoint_y][checkpoint_x] = 3
+                i += 1  
         else:
             map[checkpoint_y][checkpoint_x] = 2
+            i += 1
 
     return map
 
@@ -133,7 +134,7 @@ def calculate_score_and_print_best_path(all_possibilities,graph):
 
     return best_path,best_score 
 def main():
-    array = generate_random_map((12,12))
+    array = generate_random_map((11,11))
     # convert string to array
     # array = json.loads(array)
 
