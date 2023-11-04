@@ -62,7 +62,9 @@ var Plant = function(id, map, start_point, goal_point, episodes) {
 
     // Resets map to new random setup. Usefull for successive episodes training
     var resetRandom = function() {
+        console.log("map: ", map)
         number_valves = Math.floor( (map.length + map[0].length) / 2) - 1
+        console.log(number_valves)
         valves = JSON.parse(JSON.stringify(randomValves(number_valves)))
         // console.log(valves)
         goal = JSON.parse(JSON.stringify(randomGoal()))

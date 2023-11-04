@@ -23,6 +23,9 @@ function everyPossibilities(graph) {
         }
     }
 
+    if (start == null || end == null)
+        return []
+
     const otherValues = [];
     others.forEach(e => {
         otherValues.push(e["letter"])
