@@ -3,8 +3,7 @@ from itertools import permutations
 import random
 import sys
 
-global game_status
-
+# global best_score
 def array_to_weighted_graph(array):
     graph = {}
     current_letter = ['A']
@@ -105,9 +104,12 @@ def generate_random_map(size):
             else:
                 map[checkpoint_y][checkpoint_x] = 3
                 i += 1  
-        else:
+        # place a checkpoint but veryfie that it's not on the same as a precedent checkpoint
+        elif map[checkpoint_y][checkpoint_x] == 0:
             map[checkpoint_y][checkpoint_x] = 2
             i += 1
+        else:
+            pass
 
     return map
 
@@ -116,10 +118,12 @@ def generate_random_map(size):
 
 
 # calculate the score of each path
-def calculate_score(path,graph):
+def calculate_score(path,graph,best_score):
     score = 0
     for i in range(len(path)-1):
         score += graph[path[i]]['dest'][path[i+1]]
+        if score > best_score:
+            return 100000
     return score
 
 # calculate the score of each path  print the best path (lower score)
@@ -127,14 +131,15 @@ def calculate_score_and_print_best_path(all_possibilities,graph):
     best_score = 100000
     best_path = []
     for path in all_possibilities:
-        score = calculate_score(path,graph)
+        score = calculate_score(path,graph,best_score)
+        print(score)
         if score < best_score:
             best_score = score
             best_path = path
 
     return best_path,best_score 
 def main():
-    array = generate_random_map((11,11))
+    array = generate_random_map((12,12))
     # convert string to array
     # array = json.loads(array)
 
@@ -147,5 +152,9 @@ def main():
     print(best_score)
     sys.stdout.flush()
 
+import time
 if __name__ == "__main__":
+    start = time.time()
     main()
+    end = time.time()
+    print(end - start)
