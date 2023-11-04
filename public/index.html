@@ -169,7 +169,7 @@
         // First args given a level_name, a string used by the server to load maps from
         // Second arg given is the number of episodes (proper successive lockouts) required for completting the game.
         // Response contains game_id, the ID of the game in the server, and agent_id the ID of the agent in the game.
-        socket.emit("newgame", ["lvl0", 3], (response) => {
+        socket.emit("newgame", ["lvl1", 3], (response) => {
           console.log(response);
           game_id = response[0]
           agent_id = response[1]

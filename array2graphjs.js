@@ -7,6 +7,7 @@ function array_to_weighted_graph(array) {
     let currentLetter = "A"
     function generateElem(coords, isStart, isValve, isEnd) {
         graph[currentLetter] = {
+            "letter": currentLetter,
             "coords": coords,
             "isStart": isStart,
             "isValve": isValve,
@@ -24,7 +25,6 @@ function array_to_weighted_graph(array) {
     }
 
     array.forEach((sub, y) => {
-        console.log(sub)
         sub.forEach((elem, x) => {
             switch (elem) {
                 case 1:
@@ -60,7 +60,6 @@ function array_to_weighted_graph(array) {
         const otherLetters = pointList.filter(e => e !== currentLetter);
 
         otherLetters.forEach(l => {
-            console.log("currentLetter: ", currentLetter, "  destination: ", l)
             const e = graph[l];
 
             const dist = Math.abs(currentElem["coords"][0] - e["coords"][0]) + Math.abs(currentElem["coords"][1] - e["coords"][1])
