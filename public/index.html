@@ -197,7 +197,7 @@
 
         
 
-    function automatiser(){
+    async function automatiser(){
 
       const gameStatusResponse = JSON.parse(game_status)
       console.log(gameStatusResponse)
@@ -238,7 +238,12 @@
 
       for (let index = 0; index < bestPath.length; index++) {
     const currentLetter = bestPath[index];
-
+    
+    await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, 1000);
+    });
 
     if (index === bestPath.length - 1) {
         lockout();
