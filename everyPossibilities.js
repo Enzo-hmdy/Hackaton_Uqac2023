@@ -18,7 +18,7 @@ function everyPossibilities(graph) {
             start = e;
         } else if (e["isEnd"] === true) {
             end = e;
-        } else if (e["isValve"] === true) {
+        } else {
             others.push(e)
         }
     }

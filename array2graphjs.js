@@ -5,12 +5,11 @@ function array_to_weighted_graph(array) {
 
 
     let currentLetter = "A"
-    function generateElem(coords, isStart, isValve, isEnd) {
+    function generateElem(coords, isStart, isEnd) {
         graph[currentLetter] = {
             "letter": currentLetter,
             "coords": coords,
             "isStart": isStart,
-            "isValve": isValve,
             "isEnd": isEnd,
             "dest": {
 
@@ -28,13 +27,13 @@ function array_to_weighted_graph(array) {
         sub.forEach((elem, x) => {
             switch (elem) {
                 case 1:
-                    generateElem([x, y], true, false, false)
+                    generateElem([x, y], true, false)
                     break;
                 case 2:
-                    generateElem([x, y], false, true, false)
+                    generateElem([x, y], false, false)
                     break;
                 case 4:
-                    generateElem([x, y], false, false, true)
+                    generateElem([x, y], false, true)
                     break;
                 case 0:
                 default:
