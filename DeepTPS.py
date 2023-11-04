@@ -2,6 +2,7 @@ import json
 from itertools import permutations
 import random
 import sys
+import numpy as np
 
 # global best_score
 def array_to_weighted_graph(array):
@@ -52,11 +53,17 @@ def func_every_possibilities(graph):
     if not starts or not ends:
         return []
 
-    all_possibilities = list(permutations(others))
-    all_possibilities = [[starts[0]] + list(perm) + [ends[0]] for perm in all_possibilities]
+    starts = starts[0]
+    ends = ends[0]
+    all_others = np.array([point for point in others if point != starts and point != ends])
 
+    all_possibilities = []
+    # generate all permutations of others
+    for perm in permutations(all_others):
+        all_possibilities.append([starts] + list(perm) + [ends])
+
+   
     return all_possibilities
-
 
 
 def generate_random_map(size):
@@ -132,22 +139,33 @@ def calculate_score_and_print_best_path(all_possibilities,graph):
     best_path = []
     for path in all_possibilities:
         score = calculate_score(path,graph,best_score)
-        print(score)
         if score < best_score:
             best_score = score
             best_path = path
 
     return best_path,best_score 
 def main():
-    array = generate_random_map((12,12))
+    start = time.time()
+    array = generate_random_map((11,11))
+    end = time.time()
+    print(end - start)
     # convert string to array
     # array = json.loads(array)
 
-
+    start = time.time()
     graph = array_to_weighted_graph(array)
-    print(graph)
+    end = time.time()
+    print(end - start)
+
+    start = time.time()
     all_possibilities = func_every_possibilities(graph)
+    end = time.time()
+    print(end - start)
+
+    start = time.time()
     best_path,best_score = calculate_score_and_print_best_path(all_possibilities,graph)
+    end = time.time()
+    print(end - start)
     print(json.dumps(best_path))
     print(best_score)
     sys.stdout.flush()
