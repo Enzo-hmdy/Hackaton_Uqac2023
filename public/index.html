@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="index.css">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Lock this out</title>
+</head>
+<body>
+    <h1>Lock this out</h1>
+
+    <div>
+      <h3>Game ID :</h3>
+      <p id="gameid"></p>
+      <h3>Agent ID :</h3>
+      <p id="agentid"></p>
+      <h3>Reward :</h3>
+      <p id="reward">0</p>
+      <h3>Game Status :</h3>
+      <!-- <p id="gamestatus">0</p> -->
+      <div id="gamegrid">
+      </div>
+    </div>
+    <div id="buttonspad"> 
+      <div id="moveleft" class="cbutton left" type="button">LEFT</div>
+      <div>
+        <div id="moveup" class="cbutton up" type="button">UP</div>
+        <div id="movedown" class="cbutton down" type="button">DOWN</div>
+      </div>
+      <div id="moveright" class="cbutton right" type="button">RIGHT</div>
+      <div id="lockout" class="cbutton lockout" type="button">LOCKOUT</div>
+    </div>
+    <div>
+      <h2 id="solveddisplay"></h2>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Create socket connection, detecting port by window.location (localhost 3000)
+        const socket = io();
+
+        // Init variables
+        var game_id = 0
+        var agent_id = 0
+        var game_status = []
+
+        // Access page elements
+        const elem_gameid = document.getElementById('gameid');
+        const elem_agentid = document.getElementById('agentid');
+        const elem_reward = document.getElementById("reward")
+        // const elem_gamestatus = document.getElementById('gamestatus');
+
+        // Add event listeners on buttons to trigger action on click
+        document.getElementById("moveleft").addEventListener("click", moveLeft )
+        document.getElementById("moveright").addEventListener("click", moveRight )
+        document.getElementById("moveup").addEventListener("click", moveUp )
+        document.getElementById("movedown").addEventListener("click", moveDown )
+        document.getElementById("lockout").addEventListener("click", lockout )
+        
+
+        // Functio used to update the grid display on page based on status
+        function displayStatus(status) {
+          // Parse string status to object
+          status = JSON.parse(status)
+          document.getElementById("gamegrid").innerHTML = null
+          // Acces grid element
+          var elem_gamegrid = document.getElementById("gamegrid")
+          // For each row of status
+          for (var i = 0; i < status.length; i++) {
+            var row = document.createElement("div")
+            row.className = "row"
+            // For each cell in row
+            for (var ii = 0; ii < status[0].length; ii++) {
+              // Create element
+              var cell = document.createElement("div")
+              cell.className = "gridcell"
+              // Add class to goal for styling, check if each cell is the goal
+              if (Math.floor(status[i][ii] / 4) > 0 ) {
+                cell.classList.add("goalcell")
+                status[i][ii] = status[i][ii] - 4 
+                // Add class to valves for styling, check if each cell is valve
+              } else if (Math.floor(status[i][ii] / 2) > 0) {
+                cell.classList.add("valvecell")
+                status[i][ii] = status[i][ii] - 2
+                // Check if cell contains agent for styling, check each cell
+              } if (status[i][ii] == 1) {
+                cell.classList.add("agentcell")
+              }
+              row.appendChild(cell)
+            }
+            // add row to grid in page
+            elem_gamegrid.appendChild(row)
+          }
+        }
+
+        // Sends event "move" to socket. Args given are game_id, agent_id and direction=LEFT.
+        // Response gives back a status as a JSON string and and a reward score as INT
+        // Then update display
+        function moveLeft() {
+          socket.emit("move", [game_id, agent_id, "LEFT"], (response) => {
+            game_status = response[0]
+            reward = response[1]
+            // elem_gamestatus.innerText = game_status
+            displayStatus(game_status)
+            elem_reward.innerText = reward
+          })
+        }
+
+        // Sends event "move" to socket. Args given are game_id, agent_id and direction=RIGHT.
+        // Response gives back a status as a JSON string and and a reward score as INT
+        // Then update display
+        function moveRight() {
+          socket.emit("move", [game_id, agent_id, "RIGHT"], (response) => {
+            game_status = response[0]
+            reward = response[1]
+            // elem_gamestatus.innerText = game_status
+            displayStatus(game_status)
+            elem_reward.innerText = reward
+          })
+        }
+
+        // Sends event "move" to socket. Args given are game_id, agent_id and direction=UP.
+        // Response gives back a status as a JSON string and and a reward score as INT
+        // Then update display
+        function moveUp() {
+          socket.emit("move", [game_id, agent_id, "UP"], (response) => {
+            game_status = response[0]
+            reward = response[1]
+            // elem_gamestatus.innerText = game_status
+            displayStatus(game_status)
+            elem_reward.innerText = reward
+          })
+        }
+
+        // Sends event "move" to socket. Args given are game_id, agent_id and direction=DOWN.
+        // Response gives back a status as a JSON string and and a reward score as INT
+        // Then update display
+        function moveDown() {
+          socket.emit("move", [game_id, agent_id, "DOWN"], (response) => {
+            game_status = response[0]
+            reward = response[1]
+            // elem_gamestatus.innerText = game_status
+            displayStatus(game_status)
+            elem_reward.innerText = reward
+          })
+        }
+
+        // Sends event "lockout" to socket. Args given are game_id, agent_id
+        // Response gives back a status as a JSON string and and a reward score as INT
+        // Then update display
+        function lockout() {
+          socket.emit("lockout", [game_id, agent_id], (response) => {
+            game_status = response[0]
+            reward = response[1]
+            solved = response[2]
+            // elem_gamestatus.innerText = game_status
+            displayStatus(game_status)
+            elem_reward.innerText = reward
+
+            var elem_solveddisplay = document.getElementById("solveddisplay")
+            if (solved) {
+              solveddisplay.innerText = "Cadenassage complet !"
+            }
+          })
+        }
+
+
+        // Sends event "newgame" to socket during page creation
+        // First args given a level_name, a string used by the server to load maps from
+        // Second arg given is the number of episodes (proper successive lockouts) required for completting the game.
+        // Response contains game_id, the ID of the game in the server, and agent_id the ID of the agent in the game.
+        socket.emit("newgame", ["lvl0", 3], (response) => {
+          console.log(response);
+          game_id = response[0]
+          agent_id = response[1]
+
+          // Display response info
+          elem_gameid.innerText = response[0]
+          elem_agentid.innerText = response[1]
+
+          // Get game status after creation
+          socket.emit("gamestatus", response[0], (response) => {
+            game_status = response
+            displayStatus(game_status)
+          })
+        }); 
+
+        
+
+    </script>
+</body>
+</html>

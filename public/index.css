@@ -1,0 +1,73 @@
+body {
+    background-color: #333333;
+    color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.row {
+    height: 54px;
+}
+
+.gridcell {
+    height:50px;
+    width: 50px;
+    margin: 2px;
+    background-color: lightslategray;
+    display: inline-block;
+}
+
+.agentcell {
+  background-image: url("agent.png");
+  background-size: contain;
+}
+
+.valvecell {
+  background-image: url("valve.png");
+  background-size: contain;
+}
+
+.goalcell {
+  background-image: url("machine-transparent.png");
+  background-size: contain;
+}
+
+.agentcell.valvecell {
+    background-image: url("agent.png"), url("valve.png") ;
+    background-size: contain;
+}
+
+.agentcell.goalcell {
+    background-image: url("agent.png"), url("machine-transparent.png");
+    background-size: contain;
+}
+
+.cbutton {
+    width: 80px;
+    height: 80px;
+    background-color: cadetblue;
+    text-align: center;
+    margin: 5px;
+    line-height: 80px;
+    user-select: none;
+}
+
+#buttonspad {
+    display: flex;
+}
+
+.cbutton.left {
+    height: 165px;
+    line-height: 165px;
+}
+
+.cbutton.right {
+    height: 165px;
+    line-height: 165px;
+}
+
+.cbutton.lockout {
+    height: 165px;
+    width: 165px;
+    line-height: 165px;
+    background-color: darkred;
+}
