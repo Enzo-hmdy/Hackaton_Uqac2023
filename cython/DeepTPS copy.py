@@ -129,25 +129,40 @@ def calculate_score(path, graph, best_score):
     score = 0
     for i in range(len(path) - 1):
         score += graph[path[i]]['dest'][path[i + 1]]
-        if score > best_score:
-            return 100000
     return score
 
 def nearest_neighbor(graph):
     start = [point for point in graph if graph[point]['isStart']][0]
     end = [point for point in graph if graph[point]['isEnd']][0]
 
+    # Remove start and end from unvisited
     unvisited = set(graph.keys())
     unvisited.remove(start)
+    unvisited.remove(end)
+
+    # Initialize a list to keep track of visited checkpoints
+    visited_checkpoints = []
+
     path = [start]
 
     while unvisited:
         current_point = path[-1]
+        if current_point in visited_checkpoints:
+            # If the current point is a checkpoint, remove it from visited_checkpoints
+            visited_checkpoints.remove(current_point)
+
         nearest_point = min(unvisited, key=lambda point: graph[current_point]['dest'][point])
         path.append(nearest_point)
         unvisited.remove(nearest_point)
 
+        if nearest_point in visited_checkpoints:
+            # If the nearest point is a checkpoint, add it to visited_checkpoints
+            visited_checkpoints.append(nearest_point)
+
     path.append(end)
+
+    return path
+
 
     return path
 def calculate_score_and_print_best_path(all_possibilities, graph):
@@ -164,6 +179,7 @@ def calculate_score_and_print_best_path(all_possibilities, graph):
 import time
 def main():
     array = generate_random_map((8,8))
+    print(array)
     graph = array_to_weighted_graph(array)
 
     # Original approach
